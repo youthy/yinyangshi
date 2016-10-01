@@ -38,6 +38,21 @@
                "type" : "ComboBox"
             },
 						{
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "模式",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_chapter_mode",
+               "list" : "普通,困难",
+               "select" : "1",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            },
+						{
 	            "align" : "left",
 	            "color" : "0,0,0",
 	            "size" : "20",
@@ -82,21 +97,7 @@
 	            "size" : "30",
 	            "type" : "ComboBox"
             },
-            {
-               "align" : "left",
-               "color" : "0,0,0",
-               "size" : "20",
-               "text" : "模式",
-               "type" : "Label"
-            },
-            {
-               "id" : "dog_chapter_mode",
-               "list" : "普通,困难",
-               "select" : "1",
-               "size" : "30",
-               "type" : "RadioGroup",
-               "orientation" : "horizontal"
-            },
+            
 						{
 	            "id" : "dog_mon_type",
 	            "list" : "经验怪,全部(不含boss),全部(包括Boss)",
