@@ -1,0 +1,242 @@
+{
+   "style" : "default",
+   "config" : "save_yinyangshi.dat",
+   "width" : 540,
+   "height" : 960,
+   "cancelname" : "取消",
+   "okname" : "确定",
+   "views" : [
+      {
+         "text" : "Main",
+         "type" : "Page",
+         "views" : [
+            {
+               "id" : "main_method",
+               "list" : "挂机狗粮,刷御魂",
+               "select" : "0",
+               "size" : "30",
+               "type" : "ComboBox"
+            }
+         ]
+      },
+      {
+         "text" : "挂机狗粮",
+         "type" : "Page",
+         "views" : [
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "章节",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_chapter",
+               "list" : "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+               "select" : "7",
+               "size" : "30",
+               "type" : "ComboBox"
+            },
+						{
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "size" : "20",
+	            "text" : "目前开通的最大章节数",
+	            "type" : "Label"
+            },
+						{
+	            "id" : "dog_chapter_max",
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "kbtype" : "number",
+	            "prompt" : "输入自己目前开通的最大章节数",
+	            "size" : "25",
+	            "text" : "17",
+	            "type" : "Edit"
+            },
+						{
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "size" : "20",
+	            "text" : "在地图行走屏数(只走过大约几个屏幕退出刷新)",
+	            "type" : "Label"
+            },
+						{
+	            "id" : "dog_chapter_map_size",
+	            "list" : "1,2,3,4",
+	            "select" : "2",
+	            "size" : "30",
+	            "type" : "ComboBox"
+            },
+						{
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "size" : "20",
+	            "text" : "经验怪检测间隔",
+	            "type" : "Label"
+            },
+						{
+	            "id" : "dog_check_interval",
+	            "list" : "100,200,300,400,500,600,700,800,900,1000",
+	            "select" : "2",
+	            "size" : "30",
+	            "type" : "ComboBox"
+            },
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "模式",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_chapter_mode",
+               "list" : "普通,困难",
+               "select" : "1",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            },
+						{
+	            "id" : "dog_mon_type",
+	            "list" : "经验怪,全部(不含boss),全部(包括Boss)",
+	            "select" : "0",
+	            "size" : "30",
+	            "type" : "RadioGroup",
+	            "orientation" : "horizontal"
+            },
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "挑战失败后重新刷新",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_giveup",
+               "list" : "Yes,No",
+               "select" : "0",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            },
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "终止条件",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_end_cond",
+               "list" : "战胜次数,体力购买,一直重复",
+               "select" : "0",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            },
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "战胜次数",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_end_mon_count",
+               "align" : "left",
+               "color" : "0,0,0",
+               "kbtype" : "number",
+               "prompt" : "战胜50个怪后结束",
+               "size" : "25",
+               "text" : "50",
+               "type" : "Edit"
+            },
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "购买体力次数",
+               "type" : "Label"
+            },
+            {
+               "id" : "dog_end_vigor_times",
+               "align" : "left",
+               "color" : "0,0,0",
+               "kbtype" : "number",
+               "prompt" : "购买体力次数",
+               "size" : "25",
+               "text" : "0",
+               "type" : "Edit"
+            },
+						{
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "size" : "20",
+	            "text" : "结束后关掉游戏",
+	            "type" : "Label"
+            },
+						{
+	            "id" : "dog_end_game",
+	            "list" : "Yes, No",
+	            "select" : "0",
+	            "size" : "30",
+	            "type" : "RadioGroup",
+	            "orientation" : "horizontal"
+            }
+
+         ]
+      },
+			{
+	      "text" : "御魂",
+	      "type" : "Page",
+	      "views" : [
+						{
+	            "id" : "soul_floor",
+	            "list" : "1,2,3,4,5,6,7,8,9,10",
+	            "select" : "0",
+	            "size" : "30",
+	            "type" : "ComboBox"
+            }
+						
+	      ]
+      },
+			{
+	      "text" : "组队设置",
+	      "type" : "Page",
+	      "views" : [
+					{
+	          "id" : "team_method",
+	          "list" : "组队,单刷",
+	          "select" : "0",
+	          "size" : "30",
+	          "type" : "ComboBox"
+          },
+									{
+	          "id" : "team_host",
+	          "list" : "创建房间,加入他人",
+	          "select" : "1",
+	          "size" : "30",
+	          "type" : "RadioGroup",
+	          "orientation" : "horizontal"
+          },
+					{
+	          "id" : "team_win_continue",
+	          "list" : "胜利后继续邀请队友(接受邀请),拒绝邀请",
+	          "select" : "0",
+	          "size" : "30",
+	          "type" : "RadioGroup",
+	          "orientation" : "horizontal"
+          },
+					{
+	          "id" : "team_lose_continue",
+	          "list" : "失败后继续邀请队友(接受邀请),拒绝邀请",
+	          "select" : "0",
+	          "size" : "30",
+	          "type" : "RadioGroup",
+	          "orientation" : "horizontal"
+          }
+	      ]
+      }
+   ]
+}
