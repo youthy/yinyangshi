@@ -30,11 +30,12 @@ local g_s_exploreMap = {point(1146,22,0xd5c4a2), point(1209,21,0xd5c4a2), point(
 local g_s_ensure = {point(837,404,0xf4b25f), point(632,365,0xccb49b), point(440,405,0xf4b25f)}
 local g_s_battleReady = {point(27,41,0xeef6fe), point(27,43,0xedf5fd), point(33,48,0xeef6fe)}
 local g_s_battleStart = {point(43,33,0xd5c4a2), point(107,51,0xd5c4a2), point(172,48,0xd5c4a2)}
-local g_s_mainTown = {point(319,52,0x602f27), point(609,39,0x341c0b), point(1169,29,0xd5c4a2)}
+local g_s_mainTown = {point(771,37,0xf6562e), point(1167,31,0xd5c4a2), point(808,30,0x381f0f)}
 local g_s_teamPanel = {point(855,582,0xf4b25f), point(1062,582,0xf4b25f)}
 local g_s_teamCanBuild = {point(1038,184,0xf4b25f), point(1032,619,0xf4b25f)}
 local g_s_teamJoinedPanel = {point(333,582,0xdd6951), point(442,587,0xc6bdb5)}
 local g_s_teamInvited = {point(531,410,0xdd6951), point(756,411,0xf4b25f), point(638,402,0xccb49b)}
+local g_s_teamCanStart = {point(1092,264,0xcec6bd), point(978,588,0xf4b25f)}
 local g_exploreCenter = {640, 325}
 local g_chapterStartY = 144
 local g_chapterEndY = 643
@@ -55,11 +56,14 @@ local g_mailClosePos = {1178,75}
 local g_teamButton = {255,642}
 local g_teamBuildButton = {1032,619}
 local g_teamRefreshButton = {853,599}
+local g_teamStartButton = {978,588}
 local g_p_ready = {1165, 550} --  ready button pos
 local g_teamRefuseButton = {525,428}
 local g_teamAcceptButton = {753,428}
+local g_teamBuildRealButton = {876,561}
 
 local g_teamMethod = userUI.team_method + 1
+local g_teamHost = userUI.team_host + 1
 local g_teamWinContinue = userUI.team_win_continue + 1
 local g_teamLoseContinue = userUI.team_lose_continue + 1
 
@@ -300,10 +304,10 @@ local function battle_scene(nextScene)
   local f = function() tap(890, 110) end
   nextScene = do_until_appear(f, unpack(nextScene))
     -- keep tap until back to chapter map
---      while not isSceneFuzzy(g_s_chapterMap) do
---        tap(890, 110)
---        mSleep(500)
---      end
+    --      while not isSceneFuzzy(g_s_chapterMap) do
+    --        tap(890, 110)
+    --        mSleep(500)
+    --      end
     --	tap(640, 360)
     --	mSleep(500)
     --	tap(640, 360)
@@ -435,6 +439,8 @@ local function battle_scene(nextScene)
     local s_soulPanel = {point(551,179,0xccb49b), point(534,254,0xccb49b)}	
     local soulFloor = userUI.soul_floor + 1
     local soulFloorButton 
+    local resultS
+    local nextS
     local winCount = 0
     local loseCount = 0
     local isLastWin = false 
@@ -453,60 +459,89 @@ local function battle_scene(nextScene)
       return findColorInRegionFuzzy(0x282520, 100, 994,168,1075,548); 
     end 
     sysLog(string.format("soulfloor %d", soulFloor))
-		while true do 
-    tapScroll()
-    mSleep(1000)
-    tap(unpack(g_teamButton))
-    mSleep(1000)
-    tap(unpack(soulButton))
-    wait_appear(s_soulPanel)
-    select_soul_floor()
-    mSleep(1000)
-    if g_teamMethod == 1 then 
-      local x; local y
-      -- 一直尝试加入组队
-      while true do
-        x, y = find_join_button()
-        if x ~= -1 and y~= -1 then 
-          sysLog(string.format("house button x:%d, y:%d", x, y))
-          tap(x, y)
-          tap(x, y)
+    while true do 
+      tapScroll()
+      mSleep(1000)
+      tap(unpack(g_teamButton))
+      mSleep(1000)
+      tap(unpack(soulButton))
+      wait_appear(s_soulPanel)
+      select_soul_floor()
+      mSleep(1000)
+      if g_teamHost == 2 then 
+        local x; local y
+        -- 一直尝试加入组队
+        while true do
+          x, y = find_join_button()
+          if x ~= -1 and y~= -1 then 
+            sysLog(string.format("house button x:%d, y:%d", x, y))
+            tap(x, y)
+            tap(x, y)
+          end
+          mSleep(1000)
+          local nextScene = wait_appear(g_s_teamJoinedPanel, g_s_teamPanel, g_s_battleReady)
+          if nextScene ~= g_s_teamPanel then 
+            sysLog("join scene")
+            break 
+          end
+          tap(unpack(g_teamRefreshButton))
+          mSleep(500)
         end
+        -- 进入战斗-> 结果 -> 接受下次组队邀请或拒绝 -> 进入战斗 循环
+        while true do
+          resultS, nextS = battle_scene({g_s_mainTown, g_s_teamInvited})
+          if resultS == g_s_win then 
+            winCount = winCount + 1
+            isLastWin = true
+          else
+            loseCount = loseCount + 1
+            isLastWin = false
+          end
+          sysLog(string.format("soul win count %d, lose %d", winCount, loseCount))
+          if nextS == g_s_teamInvited then 
+            sysLog("soul invited after")
+            if (isLastWin and g_teamWinContinue == 1) or (not isLastWin and g_teamLoseContinue == 1) then 
+              tap(unpack(g_teamAcceptButton))
+              mSleep(2000)
+              if isSceneFuzzy(g_s_mainTown) then break end
+            else 
+              tap(unpack(g_teamRefuseButton))
+              break 
+            end
+          else
+            sysLog("not invite scene")
+            break 
+          end 
+        end
+      else
+        wait_appear(g_s_teamCanBuild)
+        tap(unpack(g_teamBuildButton))
         mSleep(1000)
-        local nextScene = wait_appear(g_s_teamJoinedPanel, g_s_teamPanel, g_s_battleReady)
-        if nextScene ~= g_s_teamPanel then 
-          sysLog("join scene")
-          break 
-        end
-        tap(unpack(g_teamRefreshButton))
-        mSleep(500)
-      end
-			-- 进入战斗-> 结果 -> 接受下次组队邀请或拒绝 -> 进入战斗 循环
-      while true do
-        local resultS, nextS = battle_scene({g_s_mainTown, g_s_teamInvited})
-        if resultS == g_s_win then 
-          winCount = winCount + 1
-          isLastWin = true
-        else
-          loseCount = loseCount + 1
-          isLastWin = false
-        end
-        if nextS == g_s_teamInvited then 
+        tap(unpack(g_teamBuildRealButton))
+        while true do 
+          wait_appear(g_s_teamCanStart)
+          tap(unpack(g_teamStartButton))
+          resultS = battle_scene({g_s_teamInvited})
+          if resultS == g_s_win then 
+            winCount = winCount + 1
+            isLastWin = true
+          else
+            loseCount = loseCount + 1
+            isLastWin = false
+          end 
+          sysLog(string.format("soul win count %d, lose %d", winCount, loseCount))
           if (isLastWin and g_teamWinContinue == 1) or (not isLastWin and g_teamLoseContinue == 1) then 
             tap(unpack(g_teamAcceptButton))
-						mSleep(2000)
-						if isSceneFuzzy(g_s_mainTown) then break end
           else 
-            tap(unpack(g_teamRefreshButton))
-						break 
+            tap(unpack(g_teamRefuseButton))
+            wait_appear(g_s_mainTown)
+            --            tap(g_backButton)
+            --            mSleep(1000)
+            break 
           end
         end 
       end
-    else
-      wait_appear(g_s_teamCanBuild)
-      tap(unpack(g_teamBuildButton))
     end
-		end
   end
   
   
@@ -522,12 +557,12 @@ local function battle_scene(nextScene)
   end
   --############ ENTERANCE ###########################
   
-main()
+  main()
   
   
---init("com.netease.onmyoji", 1)
---setScreenScale(720, 1280)
---do_until_appear(function() tap(890, 110) end, g_s_chapterMap)
+  --init("com.netease.onmyoji", 1)
+  --setScreenScale(720, 1280)
+  --do_until_appear(function() tap(890, 110) end, g_s_chapterMap)
   --pickMail()--tap(unpack(g_backButton))
   --if isVigorEnough() then
   --sysLog('ahaa')
