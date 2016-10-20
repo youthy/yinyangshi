@@ -12,7 +12,7 @@
          "views" : [
             {
                "id" : "main_method",
-               "list" : "挂机狗粮,刷御魂",
+               "list" : "挂机狗粮,刷御魂,刷屏广告",
                "select" : "0",
                "size" : "30",
                "type" : "ComboBox"
@@ -32,12 +32,12 @@
             },
             {
                "id" : "dog_chapter",
-               "list" : "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
-               "select" : "7",
+               "list" : "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+               "select" : "0",
                "size" : "30",
                "type" : "ComboBox"
             },
-						{
+            {
                "align" : "left",
                "color" : "0,0,0",
                "size" : "20",
@@ -52,59 +52,58 @@
                "type" : "RadioGroup",
                "orientation" : "horizontal"
             },
-						{
-	            "align" : "left",
-	            "color" : "0,0,0",
-	            "size" : "20",
-	            "text" : "目前开通的最大章节数",
-	            "type" : "Label"
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "目前开通的最大章节数",
+               "type" : "Label"
             },
-						{
-	            "id" : "dog_chapter_max",
-	            "align" : "left",
-	            "color" : "0,0,0",
-	            "kbtype" : "number",
-	            "prompt" : "输入自己目前开通的最大章节数",
-	            "size" : "25",
-	            "text" : "17",
-	            "type" : "Edit"
+            {
+               "id" : "dog_chapter_max",
+               "align" : "left",
+               "color" : "0,0,0",
+               "kbtype" : "number",
+               "prompt" : "输入自己目前开通的最大章节数",
+               "size" : "25",
+               "text" : "17",
+               "type" : "Edit"
             },
-						{
-	            "align" : "left",
-	            "color" : "0,0,0",
-	            "size" : "20",
-	            "text" : "在地图行走屏数(只走过大约几个屏幕退出刷新)",
-	            "type" : "Label"
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "在地图行走屏数(只走过大约几个屏幕退出刷新)",
+               "type" : "Label"
             },
-						{
-	            "id" : "dog_chapter_map_size",
-	            "list" : "1,2,3,4",
-	            "select" : "2",
-	            "size" : "30",
-	            "type" : "ComboBox"
+            {
+               "id" : "dog_chapter_map_size",
+               "list" : "1,2,3,4",
+               "select" : "2",
+               "size" : "30",
+               "type" : "ComboBox"
             },
-						{
-	            "align" : "left",
-	            "color" : "0,0,0",
-	            "size" : "20",
-	            "text" : "经验怪检测间隔",
-	            "type" : "Label"
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "经验怪检测间隔",
+               "type" : "Label"
             },
-						{
-	            "id" : "dog_check_interval",
-	            "list" : "100,200,300,400,500,600,700,800,900,1000",
-	            "select" : "2",
-	            "size" : "30",
-	            "type" : "ComboBox"
+            {
+               "id" : "dog_check_interval",
+               "list" : "100,200,300,400,500,600,700,800,900,1000",
+               "select" : "2",
+               "size" : "30",
+               "type" : "ComboBox"
             },
-            
-						{
-	            "id" : "dog_mon_type",
-	            "list" : "经验怪,全部(不含boss),全部(包括Boss)",
-	            "select" : "0",
-	            "size" : "30",
-	            "type" : "RadioGroup",
-	            "orientation" : "horizontal"
+            {
+               "id" : "dog_mon_type",
+               "list" : "经验怪,全部(不含boss),全部(包括Boss)",
+               "select" : "0",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
             },
             {
                "align" : "left",
@@ -170,74 +169,112 @@
                "text" : "0",
                "type" : "Edit"
             },
-						{
-	            "align" : "left",
-	            "color" : "0,0,0",
-	            "size" : "20",
-	            "text" : "结束后关掉游戏",
-	            "type" : "Label"
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "结束后关掉游戏",
+               "type" : "Label"
             },
-						{
-	            "id" : "dog_end_game",
-	            "list" : "Yes, No",
-	            "select" : "0",
-	            "size" : "30",
-	            "type" : "RadioGroup",
-	            "orientation" : "horizontal"
+            {
+               "id" : "dog_end_game",
+               "list" : "Yes, No",
+               "select" : "1",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
             }
-
          ]
       },
-			{
-	      "text" : "御魂",
-	      "type" : "Page",
-	      "views" : [
-						{
-	            "id" : "soul_floor",
-	            "list" : "1,2,3,4,5,6,7,8,9,10",
-	            "select" : "0",
-	            "size" : "30",
-	            "type" : "ComboBox"
+      {
+         "text" : "御魂",
+         "type" : "Page",
+         "views" : [
+            {
+               "id" : "soul_floor",
+               "list" : "1,2,3,4,5,6,7,8,9,10",
+               "select" : "0",
+               "size" : "30",
+               "type" : "ComboBox"
             }
-						
-	      ]
+         ]
       },
-			{
-	      "text" : "组队设置",
-	      "type" : "Page",
-	      "views" : [
-					{
-	          "id" : "team_method",
-	          "list" : "组队,单刷",
-	          "select" : "0",
-	          "size" : "30",
-	          "type" : "ComboBox"
-          },
-									{
-	          "id" : "team_host",
-	          "list" : "创建房间,加入他人",
-	          "select" : "1",
-	          "size" : "30",
-	          "type" : "RadioGroup",
-	          "orientation" : "horizontal"
-          },
-					{
-	          "id" : "team_win_continue",
-	          "list" : "胜利后继续邀请队友(接受邀请),拒绝邀请",
-	          "select" : "0",
-	          "size" : "30",
-	          "type" : "RadioGroup",
-	          "orientation" : "horizontal"
-          },
-					{
-	          "id" : "team_lose_continue",
-	          "list" : "失败后继续邀请队友(接受邀请),拒绝邀请",
-	          "select" : "0",
-	          "size" : "30",
-	          "type" : "RadioGroup",
-	          "orientation" : "horizontal"
-          }
-	      ]
+      {
+         "text" : "组队设置",
+         "type" : "Page",
+         "views" : [
+            {
+               "id" : "team_method",
+               "list" : "组队,单刷",
+               "select" : "0",
+               "size" : "30",
+               "type" : "ComboBox"
+            },
+            {
+               "id" : "team_host",
+               "list" : "创建房间,加入他人",
+               "select" : "0",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            },
+            {
+               "id" : "team_win_continue",
+               "list" : "胜利后继续邀请队友(接受邀请),拒绝邀请",
+               "select" : "0",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            },
+            {
+               "id" : "team_lose_continue",
+               "list" : "失败后继续邀请队友(接受邀请),拒绝邀请",
+               "select" : "1",
+               "size" : "30",
+               "type" : "RadioGroup",
+               "orientation" : "horizontal"
+            }
+         ]
+      },
+      {
+         "text" : "刷屏设置",
+         "type" : "Page",
+         "views" : [
+            {
+               "align" : "left",
+               "color" : "0,0,0",
+               "size" : "20",
+               "text" : "频道",
+               "type" : "Label"
+            },
+            {
+               "id" : "chat_channel",
+               "list" : "世界,阴阳寮,附近",
+               "select" : "0",
+               "size" : "30",
+               "type" : "ComboBox"
+            },
+						{
+	            "id" : "chat_content",
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "kbtype" : "default",
+	            "prompt" : "输入文字",
+	            "size" : "25",
+	            "text" : "#cff0000[千本萝莉] #c000000阴阳寮收人。每天3星麒麟，全天buff，目前90多人。只求活跃！",
+	            "type" : "Edit"
+            },
+						{
+	            "id" : "chat_cd",
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "kbtype" : "number",
+	            "prompt" : "刷屏间隔x秒",
+	            "size" : "25",
+	            "text" : "10",
+	            "type" : "Edit"
+            }
+         ]
       }
    ]
 }

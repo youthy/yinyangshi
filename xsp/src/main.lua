@@ -32,7 +32,7 @@ local g_s_battleReady = {point(27,41,0xeef6fe), point(27,43,0xedf5fd), point(33,
 local g_s_battleStart = {point(43,33,0xd5c4a2), point(107,51,0xd5c4a2), point(172,48,0xd5c4a2)}
 local g_s_mainTown = {point(771,37,0xf6562e), point(1167,31,0xd5c4a2), point(808,30,0x381f0f)}
 local g_s_teamPanel = {point(855,582,0xf4b25f), point(1062,582,0xf4b25f)}
-local g_s_teamCanBuild = {point(1038,184,0xf4b25f), point(1032,619,0xf4b25f)}
+local g_s_teamCanBuild = {point(811,597,0xf4b25f), point(1032,619,0xf4b25f)}
 local g_s_teamJoinedPanel = {point(333,582,0xdd6951), point(442,587,0xc6bdb5)}
 local g_s_teamInvited = {point(531,410,0xdd6951), point(756,411,0xf4b25f), point(638,402,0xccb49b)}
 local g_s_teamCanStart = {point(1092,264,0xcec6bd), point(978,588,0xf4b25f)}
@@ -258,7 +258,7 @@ local function find_mon3(monType, ms)
       if #points == 0 then break end
       for _, p in ipairs(points) do
         sysLog(string.format("mon3 point.x:%d, point.y:%d", p.x, p.y))
-        expx, expy = findMultiColorInRegionFuzzy2(0x255677, {{x=0, y=12, color=0x8d1b1c}}, 95, math.max(0, p.x-120), p.y, p.x+120, p.y+180)
+        expx, expy = findMultiColorInRegionFuzzy2(0x255677, {{x=0, y=12, color=0x8d1b1c}}, 97, math.max(0, p.x-120), p.y, p.x+120, p.y+180)
         if expx ~= -1 and expy ~= -1 then 
           sysLog(string.format("exp find point.x:%d, point.y:%d", expx, expy))
           keepScreen(false)
@@ -339,6 +339,7 @@ local function battle_scene(nextScene)
     local checkInterval = (userUI.dog_check_interval + 1)*100
     local walkStep = 0
     local winCount = 0
+    local needRefresh = false
     local needChooseChapter = true
     local loseCount = 0
     local vigorAlreadyBuy = 0
@@ -348,16 +349,25 @@ local function battle_scene(nextScene)
       if endCondition == 1 then
         return winCount < winCountEnd
       elseif endCondition == 2 then
-        return buyVigorTimes <= buyVigorTimesMax
+        if needBuyVigor then 
+          return buyVigorTimes < buyVigorTimesMax
+        else 
+          return true 
+        end
       else
         return true
       end
+    end
+    local function find_explore_pos()
+      return findMultiColorInRegionFuzzy2(0x180e08, {{x=27, y=131, color=0xa8a098},{x=-5,y=19,color=0x26180b},{color=0xdb9aeb,x=-56,y=33}}, 95, 400, 100, 1280, 360)
     end
     sysLog(string.format("chapter:%d,mode:%d,mon_type:%d,refresh:%d,end_mon_count:%d,end_mon_vigor_times:%d",
     chapter, mode, monType, refreshFailed, winCountEnd, buyVigorTimes))
     mSleep(1000)
     tap(unpack(g_explorePos))
+    --tap(find_explore_pos())
     wait_appear(g_s_exploreMap)
+    
     while end_condition() do
       --  if needChooseChapter then 
       -- 进入过地图后再出来，屏幕中间就是要选择的章节
@@ -397,11 +407,17 @@ local function battle_scene(nextScene)
               winCount = winCount + 1
             else
               loseCount = loseCount + 1
-              if refreshFailed == 1 then break end  -- if fail quit to refresh 
+              if refreshFailed == 1 then 
+                needRefresh = true
+                break 
+              end  -- if fail quit to refresh 
             end
           end
         until x == -1 and y == -1
-        if refreshFailed == 1 and loseCount ~= 0 then break end
+        if needRefresh then 
+          needRefresh = false
+          break 
+        end
         walkStep = walkStep + 1
       end
       sysLog(string.format("winCount: %d, loseCount: %d", winCount, loseCount))
@@ -411,18 +427,22 @@ local function battle_scene(nextScene)
       walkStep = 0
       wait_appear(g_s_exploreMap)
       if needBuyVigor then 
-        -- buy vigor
-        tap(unpack(g_backButton))
-        mSleep(2000)
-        buyVigor()
-        buyVigorTimes = buyVigorTimes + 1
-        mSleep(1000)
-        pickMail()
-        mSleep(500)
-        tap(unpack(g_explorePos))
-        wait_appear(g_s_exploreMap)
-        needChooseChapter = true
-        needBuyVigor = false
+        if buyVigorTimes < buyVigorTimesMax then
+          -- buy vigor
+          tap(unpack(g_backButton))
+          mSleep(2000)
+          buyVigor()
+          buyVigorTimes = buyVigorTimes + 1
+          mSleep(1000)
+          pickMail()
+          mSleep(500)
+          tap(unpack(g_explorePos))
+          wait_appear(g_s_exploreMap)
+          needChooseChapter = true
+          needBuyVigor = false
+        else
+          break
+        end
       end
     end
     if needEndGame == 1 then closeApp(APP_NAME) end
@@ -515,6 +535,7 @@ local function battle_scene(nextScene)
         end
       else
         wait_appear(g_s_teamCanBuild)
+        sysLog("can build")
         tap(unpack(g_teamBuildButton))
         mSleep(1000)
         tap(unpack(g_teamBuildRealButton))
@@ -544,8 +565,39 @@ local function battle_scene(nextScene)
     end
   end
   
-  
-  local METHOD = {dog_trainning, soul_hunting}
+  -- 刷屏
+  local function chat_ad()
+		math.randomseed(os.time())
+    local chatChannel = userUI.chat_channel + 1
+    local chatCd = userUI.chat_cd
+    local chatContent = userUI.chat_content
+    local p_chatButton = {1237,38}
+    local p_worldButton = {36,202}
+    local p_guildButton = {39,324}
+    local p_nearButton = {39,449}
+    local p_sendButton = {472,688}
+    local p_enterSpace = {138,681}
+		local p_ensureContent = {1106,77}
+    local p_channelList = {p_worldButton, p_guildButton, p_nearButton}
+    tap(unpack(p_chatButton))
+    mSleep(2000)
+    tap(unpack(p_channelList[chatChannel]))
+    mSleep(1000)
+    while true do
+      tap(unpack(p_enterSpace))
+      mSleep(1000)
+      inputText("#CLEAR#")
+      inputText(chatContent .. math.random(100))
+			tap(unpack(p_ensureContent))
+			sysLog("haha")
+      mSleep(100)
+      tap(unpack(p_sendButton))
+			sysLog("send")
+      mSleep(chatCd * 1000)
+    end
+  end
+	
+  local METHOD = {dog_trainning, soul_hunting, chat_ad}
   --######################## MAIN FUNCTION ###############################
   local function main()
     
@@ -562,36 +614,6 @@ local function battle_scene(nextScene)
   
   --init("com.netease.onmyoji", 1)
   --setScreenScale(720, 1280)
-  --do_until_appear(function() tap(890, 110) end, g_s_chapterMap)
-  --pickMail()--tap(unpack(g_backButton))
-  --if isVigorEnough() then
-  --sysLog('ahaa')
-  --end--local x1,y1 = findColorInRegionFuzzy(0xf8f3e0, 95, 761,19,790,38)
-  --sysLog(x1)
-  --sysLog(y1)
-  --choose_chapter(10, 17)
-  --x, y = find_mon3(2)
-  --if x ~= -1 and y ~= -1 then tap(x, y) end
-  ----if isScene(unpack(g_s_exploreMap)) then 
-  ----	sysLog("ahha")
-  ----end
   
-  --if isSceneFuzzy(g_s_chapterMap) then
-  --sysLog("haha")
-  --else
-  --sysLog("hei")
-  --end 
-  --sysLog(tostring(isSceneFuzzy({{x=1,y=1,color=0xffffff},{x=1,y=2,color=0xff0000}})))
-  --sysLog('ha')
-  
-  --local hudId = createHUD()
-  --showHUD(hudId,"欢迎使用叉叉脚本！",12,"0xffff0000","0xffffffff",0,100,0,228,32)      --显示HUD内容
-  --mSleep(2000)
-  --hideHUD(hudId)     --隐藏HUD
-  --find_mon2()
-  
-  --if isScene( point(27,41,0xeef6fe),point(27,43,0xedf5fd),point(33,48,0xeef6fe)) then 
-  --  sysLog("haha")
-  --end
   
   
