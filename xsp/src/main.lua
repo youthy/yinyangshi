@@ -226,7 +226,6 @@ local function choose_chapter(chapter, chapterMax)
     swipCount = swipCount + 1
   end 
   if pages ~= math.ceil(chapterMax/4) then 
-    sysLog("hei")
     tap(touchPoint.x, (remainder - 1)*(g_chapterHeight + g_chapterEdge) + g_chapterHeight*0.5 + g_chapterStartY)
   else
     mSleep(1000)
@@ -251,23 +250,27 @@ local function find_mon3(monType, ms)
   --keepScreen(true)
   local points 
   if monType == 1 then
-    keepScreen(true)
+    
     for i=1,4 do 
+			--keepScreen(true)
       sysLog(i)
       points = find_normal_mon()
       if #points == 0 then break end
       for _, p in ipairs(points) do
         sysLog(string.format("mon3 point.x:%d, point.y:%d", p.x, p.y))
-        expx, expy = findMultiColorInRegionFuzzy2(0x255677, {{x=0, y=12, color=0x8d1b1c}}, 97, math.max(0, p.x-120), p.y, p.x+120, p.y+180)
+				expx, expy = findMultiColorInRegionFuzzy2(0xfbcc04, {{x=0, y=-8, color=0xdecf9c},{x=0, y=-13, color=0x2d1d0c}}, 95, math.max(0, p.x-120), p.y, p.x+120, p.y+180)
+        if exps == -1 and expy == -1 then 
+					expx, expy = findMultiColorInRegionFuzzy2(0x1e4e6d, {{x=9, y=-1, color=0xad8c6a}}, 99, math.max(0, p.x-120), p.y, p.x+120, p.y+180)
+				end
         if expx ~= -1 and expy ~= -1 then 
           sysLog(string.format("exp find point.x:%d, point.y:%d", expx, expy))
-          keepScreen(false)
+        --  keepScreen(false)
           return p.x, p.y
         end
       end
       mSleep(ms)
     end 
-    keepScreen(false)
+    --keepScreen(false)
     return -1,-1
   elseif monType == 2 then
     points = find_normal_mon()
@@ -385,6 +388,7 @@ local function battle_scene(nextScene)
       end
       mSleep(200)
       tap(unpack(p_enter)) -- enter map
+			mSleep(2000)
       wait_appear(g_s_chapterMap)
       while walkStep < walkStepMax do
         if not isVigorEnough() then 
