@@ -35,7 +35,8 @@ local g_s_teamPanel = {point(855,582,0xf4b25f), point(1062,582,0xf4b25f)}
 local g_s_teamCanBuild = {point(811,597,0xf4b25f), point(1032,619,0xf4b25f)}
 local g_s_teamJoinedPanel = {point(333,582,0xdd6951), point(442,587,0xc6bdb5)}
 local g_s_teamInvited = {point(531,410,0xdd6951), point(756,411,0xf4b25f), point(638,402,0xccb49b)}
-local g_s_teamCanStart = {point(1092,264,0xcec6bd), point(978,588,0xf4b25f)}
+local g_s_teamCanStart3 = {point(1092,264,0xcec6bd), point(978,588,0xf4b25f)}
+local g_s_teamCanStart2 = {point(762,264,0xcec6bd), point(978,588,0xf4b25f)}
 local g_exploreCenter = {640, 325}
 local g_chapterStartY = 144
 local g_chapterEndY = 643
@@ -66,6 +67,7 @@ local g_teamMethod = userUI.team_method + 1
 local g_teamHost = userUI.team_host + 1
 local g_teamWinContinue = userUI.team_win_continue + 1
 local g_teamLoseContinue = userUI.team_lose_continue + 1
+local g_teamMember = userUI.team_member + 2
 
 -- 查找view
 local function findView(views, key, val) 
@@ -388,7 +390,7 @@ local function battle_scene(nextScene)
       end
       mSleep(200)
       tap(unpack(p_enter)) -- enter map
-			mSleep(2000)
+			mSleep(3000)
       wait_appear(g_s_chapterMap)
       while walkStep < walkStepMax do
         if not isVigorEnough() then 
@@ -544,7 +546,11 @@ local function battle_scene(nextScene)
         mSleep(1000)
         tap(unpack(g_teamBuildRealButton))
         while true do 
-          wait_appear(g_s_teamCanStart)
+					if g_teamMember == 3 then
+						wait_appear(g_s_teamCanStart3)
+					else
+						wait_appear(g_s_teamCanStart2)
+					end
           tap(unpack(g_teamStartButton))
           resultS = battle_scene({g_s_teamInvited})
           if resultS == g_s_win then 
