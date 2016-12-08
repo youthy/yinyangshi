@@ -29,10 +29,11 @@ local g_s_chapterMap = {point(38,65,0xeef6fe), point(1216,18,0xd4c3a1)} -- bigma
 local g_s_exploreMap = {point(1146,22,0xd5c4a2), point(1209,21,0xd5c4a2), point(978,29,0x341c0b)} -- explore map
 local g_s_ensure = {point(837,404,0xf4b25f), point(632,365,0xccb49b), point(440,405,0xf4b25f)}
 local g_s_battleReady = {point(27,41,0xeef6fe), point(27,43,0xedf5fd), point(33,48,0xeef6fe)}
+local g_s_teamReady = {point(27,41,0xd5c4a2), point(592,24,0x100808), point(639,45,0xfff2d0)}
 local g_s_battleStart = {point(43,33,0xd5c4a2), point(107,51,0xd5c4a2), point(172,48,0xd5c4a2)}
 local g_s_mainTown = {point(771,37,0xf6562e), point(1167,31,0xd5c4a2), point(808,30,0x381f0f)}
 local g_s_teamPanel = {point(855,582,0xf4b25f), point(1062,582,0xf4b25f)}
-local g_s_teamCanBuild = {point(811,597,0xf4b25f), point(1032,619,0xf4b25f)}
+local g_s_teamCanBuild = {point(812,626,0xf4b25f), point(1060,648,0xf4b25f)}
 local g_s_teamJoinedPanel = {point(333,582,0xdd6951), point(442,587,0xc6bdb5)}
 local g_s_teamInvited = {point(531,410,0xdd6951), point(756,411,0xf4b25f), point(638,402,0xccb49b)}
 local g_s_teamCanStart3 = {point(1092,264,0xcec6bd), point(978,588,0xf4b25f)}
@@ -245,13 +246,13 @@ local function find_boss()
 end
 
 
--- monType: 1 exp怪，2全部但是不包含boss 3全部
+-- monType: 1 exp怪，2全部但是不包含boss 3全部,4exp+boss
 local function find_mon3(monType, ms)
   sysLog(string.format("find_mon: type:%s", monType))
   local expx, expy
   --keepScreen(true)
   local points 
-  if monType == 1 then
+  if monType == 1 or monType == 4 then
     
     for i=1,4 do 
 			--keepScreen(true)
@@ -273,6 +274,7 @@ local function find_mon3(monType, ms)
       mSleep(ms)
     end 
     --keepScreen(false)
+		if monType == 4 then return find_boss() end 
     return -1,-1
   elseif monType == 2 then
     points = find_normal_mon()
@@ -301,7 +303,7 @@ end
 local function battle_scene(nextScene)
   sysLog("enter battle")
   -- if not ready press ready
-  if g_s_battleReady == wait_appear(g_s_battleReady, g_s_battleStart) then
+  if wait_appear(g_s_battleReady, g_s_teamReady) ~= nil then
     sysLog("press ready")
     tap(unpack(g_p_ready))
   end
@@ -372,10 +374,11 @@ local function battle_scene(nextScene)
     tap(unpack(g_explorePos))
     --tap(find_explore_pos())
     wait_appear(g_s_exploreMap)
-    
+ 
     while end_condition() do
       --  if needChooseChapter then 
       -- 进入过地图后再出来，屏幕中间就是要选择的章节
+			mSleep(2000)
       choose_chapter(chapter, chapterMax)
       --		needChooseChapter = false
       --	else 
@@ -457,12 +460,12 @@ local function battle_scene(nextScene)
   -- 刷御魂
   local function soul_hunting()
     local soulButton = {269,511}
-    local soulFloorStartY = 152
-    local soulFloorEndY = 517
+    local soulFloorStartY = 160
+    local soulFloorEndY = 580
     local soulFloorX = 520
     local soulFBHeight = 60
-    local soulFBEdge = 8
-    local s_soulPanel = {point(551,179,0xccb49b), point(534,254,0xccb49b)}	
+    local soulFBEdge = 6
+    local s_soulPanel = {point(510,187,0xffd07b), point(501,265,0x0f0f0f)}	
     local soulFloor = userUI.soul_floor + 1
     local soulFloorButton 
     local resultS
@@ -568,6 +571,7 @@ local function battle_scene(nextScene)
             wait_appear(g_s_mainTown)
             --            tap(g_backButton)
             --            mSleep(1000)
+						mSleep(2000)
             break 
           end
         end 
