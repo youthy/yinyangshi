@@ -44,6 +44,14 @@
                "text" : "模式",
                "type" : "Label"
             },
+						{
+	            "id" : "dog_training_type",
+	            "list" : "单人,组队(队长),组队(队员)",
+	            "select" : "0",
+	            "size" : "30",
+	            "type" : "RadioGroup",
+	            "orientation" : "horizontal"
+            },
             {
                "id" : "dog_chapter_mode",
                "list" : "普通,困难",
