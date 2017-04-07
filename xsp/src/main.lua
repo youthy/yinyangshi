@@ -11,6 +11,7 @@ local ret
 local userUI
 --local textDict = createOcrDict("dict.txt")
 ret, userUI = showUI("ui.json")
+local xuanshang_act = userUI.xuanshang + 1
 
 
 -- ###############辅助函数#########################
@@ -34,18 +35,25 @@ local g_s_exploreMap = {point(1146,22,0xd5c4a2), point(1209,21,0xd5c4a2), point(
 local g_s_ensure = {point(837,404,0xf4b25f), point(632,365,0xccb49b), point(440,405,0xf4b25f)}
 local g_s_battleReady = {point(27,41,0xd5c4a2), point(1091,636,0x200d10), point(1086,621,0x87160a)}
 local g_s_dogBattleReady = {point(27,41,0xd5c4a2), point(1091,636,0x200d10), point(1086,621,0x87160a), point(20,658,0x4f475f)}
-local g_s_dogBattleStart = {point(129,685,0xf8f3e0), point(133,690,0xf7f2df), point(79,656,0xf8f3e0)} 
+local g_s_dogBattleStart = {point(129,683,0xf8f3e0), point(139,683,0x816b52), point(61,663,0x7b6b48)} 
 local g_s_teamReady = {point(27,41,0xd5c4a2), point(592,24,0x100808), point(639,45,0xfff2d0)}
 local g_s_battleStart = {point(43,33,0xd5c4a2), point(107,51,0xd5c4a2), point(172,48,0xd5c4a2)}
 local g_s_mainTown = {point(771,37,0xf6562e), point(1167,31,0xd5c4a2), point(808,30,0x381f0f)}
 local g_s_teamPanel = {point(855,582,0xf4b25f), point(1062,582,0xf4b25f)}
 local g_s_teamCanBuild = {point(812,626,0xf4b25f), point(1060,648,0xf4b25f)}
 local g_s_teamJoinedPanel = {point(333,582,0xdd6951), point(442,587,0xc6bdb5)}
-local g_s_teamInvited = {point(531,410,0xdd6951), point(756,411,0xf4b25f), point(638,402,0xccb49b)}
+local g_s_teamInvite = {point(531,410,0xdd6951), point(756,411,0xf4b25f), point(638,402,0xccb49b)}
 local g_s_teamCanStart3 = {point(1092,264,0xcec6bd), point(978,588,0xf4b25f)}
 local g_s_teamCanStart2 = {point(762,264,0xcec6bd), point(978,588,0xf4b25f)}
 local g_s_invited = {point(131,235,0xb8a896), point(130,255,0x59b461), point(43,253,0xdb705f)}
 local g_s_in_team_doging = {point(52,458,0x423120), point(43,479,0xf9f9f0), point(1145,22,0xd5c4a2)}
+local g_s_xuanshang = {point(560,144,0xb39279), point(852,514,0xdc7161), point(850,420,0x53ae5b)}
+local g_s_round_change = {point(659,361,0x272420), point(685,366,0x272420), point(622,238,0x0161be)}
+local g_huntsoul_right_pos = {946,195}
+local g_huntsoul_mid_pos = {628,161}
+local g_huntsoul_left_pos = {334,202}
+local bt_xuanshang_agree = {850,420}
+local bt_xuanshang_refuse = {852,514}
 local g_battle_boss_pos = {853,115}
 local g_battle_little_pos = {965,271}
 local g_battle_mid_pos = {784,259}
@@ -138,7 +146,7 @@ local function isSceneFuzzy(tab)
   return true
 end 
 
-		
+
 -- wait_appear(scence1, scence2, ...) -> nil
 -- scene :: {point1, point2, ...}
 -- point :: {x=100, y=100, color=0xffffff}...
@@ -341,6 +349,53 @@ local function battle_scene(nextScene)
     return resultScene, nextScene
   end
   
+  local function in_soul_hunting(pos)
+    --local round = 0
+    local win 
+    while true do 
+      if isSceneFuzzy(g_s_dogBattleStart) then
+        toast("in battle")
+				if pos then 
+        while true do 
+          if not isSceneFuzzy(g_s_dogBattleStart) then
+						toast("battle end")
+            break
+          else
+            tap(unpack(pos))
+          end
+          mSleep(1000)
+        end
+				end
+      elseif isSceneFuzzy(g_s_teamReady) then
+        toast("press team ready")
+        tap(unpack(g_p_ready))
+      elseif isSceneFuzzy(g_s_battleReady) then
+        toast("press battle ready")
+        tap(unpack(g_p_ready))
+      elseif isSceneFuzzy(g_s_win2) then
+        toast("battle_end")
+        win = true
+        tap(unpack(g_endbattleButton))
+        mSleep(1000)
+        tap(unpack(g_endbattleButton))	
+      elseif isSceneFuzzy(g_s_lose2) then 
+        tap(unpack(g_endbattleButton))
+        mSleep(1000)
+        tap(unpack(g_endbattleButton))
+        win = false
+      elseif isSceneFuzzy(g_s_winGiftOpen) then
+        toast("win")
+        tap(unpack(g_endbattleButton))
+      elseif isSceneFuzzy(g_s_teamInvite) then
+        break    
+			elseif isSceneFuzzy(g_s_mainTown) then
+				break
+      end
+      mSleep(300)
+    end
+    return win
+  end
+  
   local function battle_scene_dog_team()
     local pos
     local touchPos = userUI.battle_select_pos + 1
@@ -351,7 +406,7 @@ local function battle_scene(nextScene)
     elseif touchPos == 3 then 
       pos = g_battle_boss_pos
     else 
-        pos = g_endbattleButton 
+      pos = g_endbattleButton 
     end
     if wait_appear(g_s_dogBattleReady) ~= nil then
       sysLog("dog press ready")
@@ -507,8 +562,8 @@ local function battle_scene(nextScene)
       if needEndGame == 1 then closeApp(APP_NAME) end
     end
     
-    local function dog_trainning_team2()
-			local pos
+    local function dog_trainning_team()
+      local pos
       local touchPos = userUI.battle_select_pos + 1
       if touchPos == 1 then
         pos = g_battle_little_pos
@@ -523,10 +578,16 @@ local function battle_scene(nextScene)
         if isSceneFuzzy(g_s_invited) then
           toast("invited")
           tap(unpack(g_invited_agree))
+        elseif isSceneFuzzy(g_s_xuanshang) then
+          if xuanshang_act == 1 then
+            tap(unpack(bt_xuanshang_agree))
+          else
+            tap(unpack(bt_xuanshang_refuse))
+          end
         elseif isSceneFuzzy(g_s_chapterMap) then
-					toast("chatpermap")
+          toast("chatpermap")
           if not isSceneFuzzy(g_s_in_team_doging) then
-						toast("leave")
+            toast("leave")
             tap(unpack(g_backButton))
             mSleep(2000)
             tap(unpack(g_okButton)) 
@@ -534,7 +595,7 @@ local function battle_scene(nextScene)
         elseif isSceneFuzzy(g_s_dogBattleReady) then
           tap(unpack(g_p_ready))
           wait_appear(g_s_dogBattleStart)
-					toast("battle_start")
+          toast("battle_start")
           if pos then 
             --mSleep(500)
             tap(unpack(pos))
@@ -550,47 +611,7 @@ local function battle_scene(nextScene)
           toast("win")
           tap(unpack(g_endbattleButton))
         end
-        mSleep(1000)
-      end
-    end
-    local function dog_trainning_team()
-      sysLog("dog_trainingteam")
-      local sceneTmp
-      while true do
-        wait_appear(g_s_invited)
-        tap(unpack(g_invited_agree))
-        --wait_appear(g_s_chapterMap)
-        wait_appear(g_s_in_team_doging, g_s_battleReady)
-        while true do
-          sceneTmp = nil
-          while sceneTmp == nil or sceneTmp == g_s_in_team_doging do
-            if isSceneFuzzy(g_s_dogBattleReady) then
-              sysLog("in battle ")
-              toast("in battle")
-              sceneTmp = g_s_dogBattleReady
-              break
-            end
-            if isSceneFuzzy(g_s_in_team_doging) then
-              sceneTmp = g_s_in_team_doging
-              sysLog("in team doging")
-              toast("in team doging")
-            elseif isSceneFuzzy(g_s_chapterMap) then
-              sysLog("leader leave")
-              toast("leave")
-              sceneTmp = g_s_chapterMap
-              break
-            end
-            mSleep(1000)
-          end
-          if sceneTmp == g_s_dogBattleReady then
-            battle_scene_dog_team()
-          else 
-            break
-          end
-        end
-        tap(unpack(g_backButton))
-        mSleep(2000)
-        tap(unpack(g_okButton)) 
+        mSleep(500)
       end
     end
     
@@ -603,7 +624,7 @@ local function battle_scene(nextScene)
         dog_trainning_solo()
       elseif trainingType == 2 then
         
-        dog_trainning_team2()
+        dog_trainning_team()
       end
     end
     
@@ -624,6 +645,16 @@ local function battle_scene(nextScene)
       local winCount = 0
       local loseCount = 0
       local isLastWin = false 
+      local mon_pos = userUI.round_mon_pos + 1
+      if mon_pos == 1 then
+        mon_pos = g_huntsoul_left_pos
+      elseif mon_pos == 2 then 
+        mon_pos = g_huntsoul_mid_pos
+      elseif mon_pos == 3 then
+        mon_pos = g_huntsoul_right_pos
+      else
+        mon_pos = nil
+      end
       local select_soul_floor = function()
         if soulFloor < 6 then 
           soulFloorButton = {soulFloorX, soulFloor*(soulFBHeight + soulFBEdge) + soulFloorStartY + 0.4*soulFBHeight}
@@ -639,61 +670,40 @@ local function battle_scene(nextScene)
         return findColorInRegionFuzzy(0x282520, 100, 994,168,1075,548); 
       end 
       sysLog(string.format("soulfloor %d", soulFloor))
-      while true do 
-        tapScroll()
-        mSleep(1000)
-        tap(unpack(g_teamButton))
-        mSleep(1000)
-        tap(unpack(soulButton))
-        wait_appear(s_soulPanel)
-        select_soul_floor()
-        mSleep(1000)
-        if g_teamHost == 2 then 
-          local x; local y
-          -- 一直尝试加入组队
-          while true do
-            x, y = find_join_button()
-            if x ~= -1 and y~= -1 then 
-              sysLog(string.format("house button x:%d, y:%d", x, y))
-              tap(x, y)
-              tap(x, y)
-            end
-            mSleep(1000)
-            local nextScene = wait_appear(g_s_teamJoinedPanel, g_s_teamPanel, g_s_battleReady)
-            if nextScene ~= g_s_teamPanel then 
-              sysLog("join scene")
-              break 
-            end
-            tap(unpack(g_teamRefreshButton))
-            mSleep(500)
-          end
-          -- 进入战斗-> 结果 -> 接受下次组队邀请或拒绝 -> 进入战斗 循环
-          while true do
-            resultS, nextS = battle_scene({g_s_mainTown, g_s_teamInvited})
-            if resultS == g_s_win then 
-              winCount = winCount + 1
-              isLastWin = true
-            else
-              loseCount = loseCount + 1
-              isLastWin = false
-            end
-            sysLog(string.format("soul win count %d, lose %d", winCount, loseCount))
-            if nextS == g_s_teamInvited then 
-              sysLog("soul invited after")
-              if (isLastWin and g_teamWinContinue == 1) or (not isLastWin and g_teamLoseContinue == 1) then 
-                tap(unpack(g_teamAcceptButton))
-                mSleep(2000)
-                if isSceneFuzzy(g_s_mainTown) then break end
-              else 
-                tap(unpack(g_teamRefuseButton))
-                break 
-              end
-            else
-              sysLog("not invite scene")
-              break 
-            end 
-          end
-        else
+			--sysLog("teamhost" .. team_host)
+      if g_teamHost == 2 then
+				while true do
+					if isSceneFuzzy(g_s_invited) then
+						toast("invited")
+						tap(unpack(g_invited_agree))
+					elseif isSceneFuzzy(g_s_teamReady) then
+						toast("press team ready")
+						tap(unpack(g_p_ready))
+						in_soul_hunting(mon_pos)
+					elseif isSceneFuzzy(g_s_battleReady) then
+						toast("press battle ready")
+						tap(unpack(g_p_ready))
+						in_soul_hunting(mon_pos)
+					elseif isSceneFuzzy(g_s_xuanshang) then
+						toast("xuanshang")
+						if xuanshang_act == 1 then
+							tap(unpack(bt_xuanshang_agree))
+						else
+							tap(unpack(bt_xuanshang_refuse))
+						end
+					end
+					mSleep(1000)
+        end
+      else
+        while true do 
+          tapScroll()
+          mSleep(1000)
+          tap(unpack(g_teamButton))
+          mSleep(1000)
+          tap(unpack(soulButton))
+          wait_appear(s_soulPanel)
+          select_soul_floor()
+          mSleep(1000)
           wait_appear(g_s_teamCanBuild)
           sysLog("can build")
           tap(unpack(g_teamBuildButton))
@@ -706,15 +716,16 @@ local function battle_scene(nextScene)
               wait_appear(g_s_teamCanStart2)
             end
             tap(unpack(g_teamStartButton))
-            resultS = battle_scene({g_s_teamInvited})
-            if resultS == g_s_win then 
-              winCount = winCount + 1
-              isLastWin = true
-            else
-              loseCount = loseCount + 1
-              isLastWin = false
-            end 
-            sysLog(string.format("soul win count %d, lose %d", winCount, loseCount))
+            --            resultS = battle_scene({g_s_teamInvite})
+            --            if resultS == g_s_win then 
+            --              winCount = winCount + 1
+            --              isLastWin = true
+            --            else
+            --              loseCount = loseCount + 1
+            --              isLastWin = false
+            --            end 
+            --            sysLog(string.format("soul win count %d, lose %d", winCount, loseCount))
+            isLastWin = in_soul_hunting(mon_pos)
             if (isLastWin and g_teamWinContinue == 1) or (not isLastWin and g_teamLoseContinue == 1) then 
               tap(unpack(g_teamAcceptButton))
             else 
@@ -783,6 +794,13 @@ local function battle_scene(nextScene)
         if isSceneFuzzy(g_s_invited) then
           toast("invited")
           tap(unpack(g_invited_agree))
+        elseif isSceneFuzzy(g_s_xuanshang) then
+          toast("xuanshang")
+          if xuanshang_act == 1 then
+            tap(unpack(bt_xuanshang_agree))
+          else
+            tap(unpack(bt_xuanshang_refuse))
+          end
         elseif isSceneFuzzy(g_s_teamReady) then
           toast("press team ready")
           tap(unpack(g_p_ready))
@@ -807,7 +825,7 @@ local function battle_scene(nextScene)
       end 
     end
     
-   
+    
     
     local METHOD = {dog_trainning, soul_hunting, chat_ad, wait_join}
     --######################## MAIN FUNCTION ###############################
@@ -832,14 +850,14 @@ local function battle_scene(nextScene)
     --local p3 = getColor(1145,22)
     --toast(tostring(p1))
     --mSleep(1000) --6373404
-		-- 6504728
+    -- 6504728
     --toast(tostring(p2))
     --mSleep(1000) -- 10847325  9268554 6373149
-		-- 5057290
-		-- 6373150
+    -- 5057290
+    -- 6373150
     --toast(tostring(p3))
     --mSleep(1000) 
-		--14009506
+    --14009506
     --orcFind()
     --	if isSceneFuzzy(g_s_battleReady) then 
     --		sysLog("haha")

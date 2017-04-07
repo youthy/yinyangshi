@@ -16,6 +16,21 @@
                "select" : "0",
                "size" : "30",
                "type" : "ComboBox"
+            },
+						{
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "size" : "20",
+	            "text" : "是否自动同意悬赏",
+	            "type" : "Label"
+            },
+						{
+	            "id" : "xuanshang",
+	            "list" : "同意,拒绝",
+	            "select" : "0",
+	            "size" : "30",
+	            "type" : "RadioGroup",
+	            "orientation" : "horizontal"
             }
          ]
       },
@@ -213,6 +228,21 @@
                "select" : "0",
                "size" : "30",
                "type" : "ComboBox"
+            },
+						{
+	            "align" : "left",
+	            "color" : "0,0,0",
+	            "size" : "20",
+	            "text" : "选怪",
+	            "type" : "Label"
+            },
+						{
+	            "id" : "round_mon_pos",
+	            "list" : "左,中,右,不选",
+	            "select" : "3",
+	            "size" : "30",
+	            "type" : "RadioGroup",
+	            "orientation" : "horizontal"
             }
          ]
       },
