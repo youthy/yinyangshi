@@ -35,7 +35,7 @@ local g_s_exploreMap = {point(1146,22,0xd5c4a2), point(1209,21,0xd5c4a2), point(
 local g_s_ensure = {point(837,404,0xf4b25f), point(632,365,0xccb49b), point(440,405,0xf4b25f)}
 local g_s_battleReady = {point(27,41,0xd5c4a2), point(1091,636,0x200d10), point(1086,621,0x87160a)}
 local g_s_dogBattleReady = {point(27,41,0xd5c4a2), point(1091,636,0x200d10), point(1086,621,0x87160a), point(20,658,0x4f475f)}
-local g_s_dogBattleStart = {point(129,683,0xf8f3e0), point(139,683,0x816b52), point(61,663,0x7b6b48)} 
+local g_s_dogBattleStart = {point(140,684,0x826a54), point(57,661,0x7c6c48), point(26,661,0x8a755a)} 
 local g_s_teamReady = {point(27,41,0xd5c4a2), point(592,24,0x100808), point(639,45,0xfff2d0)}
 local g_s_battleStart = {point(43,33,0xd5c4a2), point(107,51,0xd5c4a2), point(172,48,0xd5c4a2)}
 local g_s_mainTown = {point(771,37,0xf6562e), point(1167,31,0xd5c4a2), point(808,30,0x381f0f)}
@@ -83,7 +83,7 @@ local g_teamStartButton = {978,588}
 local g_p_ready = {1165, 550} --  ready button pos
 local g_teamRefuseButton = {525,428}
 local g_teamAcceptButton = {753,428}
-local g_teamBuildRealButton = {876,561}
+local g_teamBuildRealButton = {876,591}
 local g_endbattleButton = {1260,50}
 local g_yaoqiFontArea = {x1=530, y1=178, x2=647, y2=213}
 
@@ -703,8 +703,8 @@ local function battle_scene(nextScene)
           tap(unpack(soulButton))
           wait_appear(s_soulPanel)
           select_soul_floor()
-          mSleep(1000)
-          wait_appear(g_s_teamCanBuild)
+          mSleep(2000)
+          --wait_appear(g_s_teamCanBuild)
           sysLog("can build")
           tap(unpack(g_teamBuildButton))
           mSleep(1000)
@@ -751,8 +751,8 @@ local function battle_scene(nextScene)
       local p_worldButton = {36,202}
       local p_guildButton = {39,324}
       local p_nearButton = {39,449}
-      local p_sendButton = {472,688}
-      local p_enterSpace = {138,681}
+      local p_sendButton = {540,678}
+      local p_enterSpace = {224,667}
       local p_ensureContent = {1106,77}
       local p_channelList = {p_worldButton, p_guildButton, p_nearButton}
       tap(unpack(p_chatButton))
