@@ -28,7 +28,9 @@ end
 local g_s_win = {point(512,204,0xa21b11), point(812,153,0xf4edce), point(578,270,0x909ba4)} -- win scene
 local g_s_lose = {point(512,204,0x5e5468), point(726,168,0xbfb9ab), point(486,192,0x595063)} -- lose scene
 local g_s_win2 = {point(407,203,0xd2c4ae), point(453,222,0xb71e12), point(485,221,0xd5c7b1)}
+local g_s_team_win = {point(420,160,0xd4c6b0), point(453,164,0xb01c11), point(483,165,0xd2c4ae)}
 local g_s_lose2 = {point(381,473,0xfbfbfb), point(831,504,0x221a2a), point(649,469,0xc93434)} 
+local g_s_team_lose2 = {point(404,195,0xc0ad94), point(448,189,0x5c5366), point(476,210,0xc1ae94)}
 local g_s_winGiftOpen = {point(675,518,0xba441a), point(605,452,0xe2d63c), point(749,513,0xd19118)}
 local g_s_chapterMap = {point(38,65,0xeef6fe), point(1216,18,0xd4c3a1), point(1031,630,0x24171f)} -- bigmap
 local g_s_exploreMap = {point(1146,22,0xd5c4a2), point(1209,21,0xd5c4a2), point(978,29,0x341c0b)} -- explore map
@@ -332,7 +334,7 @@ local function battle_scene(nextScene)
     sysLog("press ready")
     tap(unpack(g_p_ready))
   end
-  local resultScene = wait_appear(g_s_win2, g_s_lose2)
+  local resultScene = wait_appear(g_s_win2, g_s_lose2, g_s_team_win, g_s_team_lose2)
   local f = function() tap(890, 110) end
   nextScene = do_until_appear(f, unpack(nextScene))
     -- keep tap until back to chapter map
@@ -372,13 +374,13 @@ local function battle_scene(nextScene)
       elseif isSceneFuzzy(g_s_battleReady) then
         toast("press battle ready")
         tap(unpack(g_p_ready))
-      elseif isSceneFuzzy(g_s_win2) then
+      elseif isSceneFuzzy(g_s_team_win) then
         toast("battle_end")
         win = true
         tap(unpack(g_endbattleButton))
         mSleep(1000)
         tap(unpack(g_endbattleButton))	
-      elseif isSceneFuzzy(g_s_lose2) then 
+      elseif isSceneFuzzy(g_s_team_lose2) then 
         tap(unpack(g_endbattleButton))
         mSleep(1000)
         tap(unpack(g_endbattleButton))
@@ -810,7 +812,7 @@ local function battle_scene(nextScene)
         elseif isSceneFuzzy(g_s_dogBattleReady) then
           toast("press dog ready")
           tap(unpack(g_p_ready))
-        elseif isSceneFuzzy(g_s_win2) or isSceneFuzzy(g_s_lose2) then
+        elseif isSceneFuzzy(g_s_win2) or isSceneFuzzy(g_s_team_win) or isSceneFuzzy(g_s_lose2) or isSceneFuzzy(g_s_team_lose2) then
           toast("battle_end")
           tap(unpack(g_endbattleButton))
           --toast("one")
